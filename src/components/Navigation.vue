@@ -1,0 +1,76 @@
+<template>
+<div class="topnav">
+    <nav>
+        <router-link class="topalign" v-for="routes in links"
+                     v-bind:key="routes.id"
+                     :to="`${routes.page}`">{{routes.text}}</router-link>
+    </nav>
+</div>
+</template>
+
+<script>
+    export default  {
+        name: 'Navigation',
+
+        data() {
+            return {
+                links: [
+                    {
+                        id: 1,
+                        text: 'Home',
+                        page:'/Home'
+                    },
+                    {
+                        id: 2,
+                        text: 'About',
+                        page:'/About'
+                    },
+                    {
+                        id: 3,
+                        text: 'Contact',
+                        page:'/Contact'
+                    }
+                ]
+            }
+        }
+    }
+</script>
+
+<style>
+    .topalign {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .topnav {
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: #333;
+    }
+    .topnav a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    .topnav a.active {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .topnav-right {
+        float: right;
+    }
+    .spacing {
+        Margin-right: 10px;
+    }
+</style>
