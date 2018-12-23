@@ -14,11 +14,12 @@
                         <input type="text" v-model="patientName"></input>
                     </div>
                 </div>
+                <br/>
                 <div class="alignLabel">
                     <table border="0">
                         <tr>
                             <td style="width=30%">
-                                <select name="" id="" v-model="selectedRelationship">
+                                <select  @change="relationShipSet()" name="" id="" v-model="selectedRelationship">
                                     <option style="height=150px" :value="n" v-for="n in relationships">{{n.name}}</option>
                                 </select>
                             </td>
@@ -40,7 +41,7 @@
                         </select>
                     </div>
                 </div>
-            <div style="display:flex;flex-direction: column; padding: 10px">
+            <div>
                 <div class="alignLabel">
                     <label for="dateTimelabel">
                         <span id="dateTimelabel"style="width:100%; text-align: left;">Date/Time of visit: <span class="required">*</span>
@@ -50,15 +51,16 @@
                 <div>
                     <vue-datetimepicker  @change="handleChange($event)"></vue-datetimepicker>
                 </div>
-                </div>
+            </div>
+                <br>
             <div class="alignLabel">
-            <table border="0" id="cssTable"><tr>
+            <table border="0" id="cssTable" style="width: 100%"><tr>
                 <td>
                     <label for="age"><span>Age <span class="required">*</span></span></label>
                 </td>
                 <td>
-                    <select>
-                        <option v-model="age" :value="n" v-for="n in 121">{{n}}</option>
+                    <select v-model="age" >
+                        <option :value="n" v-for="n in 121">{{n}}</option>
                     </select>
                 </td>
                 <td>
@@ -144,33 +146,34 @@
                 <h3>Make sure you enter record correctly !</h3>
                 <div id="printSlip">
                     <div class=" center-slip-header slipContainer">
-                    <h2> {{selectedDepartment.parent}} Clinic</h2>
+                    <h2> {{selectedDepartment.clinicName}} Clinic</h2>
+                        <br>
                     <small>For an appointment call +91-{{selectedDepartment.phone}} </small>
                     </div>
                     <br>
-                    <table>
+                    <table class="slipTable">
                         <tr>
-                            <td style="font-style:bold;"><b>Patient Name:</b> </td>
+                            <td style="font-style:bold;" class="alignLabel"><b>Patient Name:</b> </td>
                             <td>{{patientName}}  {{selectedRelationship.abbrev}}/o {{nameOfparent}}</td>
                         </tr>
                         <tr>
-                            <td>
-                                <b>Age: </b> &nbsp; {{age}} &nbsp;
+                            <td class="alignLabel">
+                                <b>Age: </b> &nbsp; {{age}} &nbsp; years
                             </td>
-                            <td>
-                                <b>Gender: </b> &nbsp; {{gender}}
+                            <td class="alignLabel">
+                                <b>Gender:</b> &nbsp; {{gender}}
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <b>Town / City:</b>  &nbsp; {{townCity}}
                             </td>
-                            <td>
+                            <td class="alignLabel">
                                 <b>Landline/ Mobile: </b> &nbsp; {{contactNumber}}
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td class="alignLabel">
                                 <b>Department: </b> {{selectedDepartment.name}}
                             </td>
                             <td>
@@ -178,12 +181,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <td> <b>Date/Time of Visit:</b></td>
+                            <td class="alignLabel"> <b>Date/Time of Visit:</b></td>
                             <td>{{this.dateTime}}</td>
                         </tr>
                         <tr>
-                            <td><b>Patient Signature:</b></td>
-                            <td align="center"> ........................................... </td>
+                            <td style="width: '60%';" class="alignLabel"><b>Patient Signature:</b></td>
+                            <td align="left"> ........................................... </td>
                         </tr>
                     </table>
                 </div>
@@ -215,23 +218,26 @@
 
     Vue.use(VueTextareaAutosize)
 
-// http://haixing-hu.github.io/vue-datetime-picker/
     export default {
         name: 'Attend',
         data : function (){
             return {
                 patientName: "",
-                displayState: 'block',
+                displayState: 'none',
                 attendType: "",
                 nameOfparent: '',
                 selectedDepartment: '',
                 gender: '',
                 dateTime: '',
                 selectedRelationship : '',
-                relationships : [{name: 'Son', abbrev: 'S'}, {name: 'Daughter', abbrev: 'D'}],
+                relationships : [
+                    {name: 'Son', abbrev: 's'},
+                    {name: 'Daughter', abbrev: 'd'},
+                    {name: 'Wife', abbrev: 'w'}
+                    ],
                 department: '',
-                departments : [{name: 'Medicene', parent: 'Swarnkamal', doc: 'Kanwaljit Singh', phone: '9417089045'},
-                    {name: 'Dental', parent: 'Vikas Dental', doc: 'Vikas', phone: '9815610902'}],
+                departments : [{name: 'Medicene', clinicName: 'Swarnkamal', doc: 'Kanwaljit Singh', phone: '9417089045'},
+                    {name: 'Dental', clinicName: 'Vikas Dental', doc: 'Vikas', phone: '9815610902'}],
                 townCity: '',
                 contactNumber: '',
                 address: '',
@@ -251,6 +257,14 @@
             handleChange: function(data){
                 this.dateTime = data;
             },
+            relationShipSet: function(){
+                if (this.selectedRelationship.name == 'Son'){
+                    this.gender = "Male"
+                }
+                else {
+                    this.gender = "Female"
+                }
+            },
             changeValue: function(newValue) {
                 this.selectedValue = newValue;
             },
@@ -259,7 +273,11 @@
                 this.displayState = 'block';
             },
             printSlip: function(){
-                printJS('printSlip', 'html', style="display: inline-block; text-align: center; padding: 30px; margin: 15px; text-align: center; padding: 15px; vertical-align: top;");
+                printJS({
+                    printable: 'printSlip',
+                    type : 'html',
+                    targetStyles: ['*'],
+                });
             },
             editSlip: function(){
                 this.displayState = 'none';
@@ -271,7 +289,7 @@
 
             doc.setFontSize('30')
             doc.setFontStyle('bold')
-            doc.text(60, 10, '{selectedDepartment.parent} Clinic')
+            doc.text(60, 10, '{selectedDepartment.clinicName} Clinic')
 
             doc.setFont('courier')
             doc.setFontSize('15')
@@ -294,7 +312,7 @@
             doc.setFontType('bold')
             doc.text(10, 40, 'Age: ')
             doc.setFontType('normal')
-            doc.text(30, 40, '29 years')
+            doc.text(30, 40,  {age})
 
             doc.setFontType('bold')
             doc.text(60, 40, "Gender: ")
@@ -305,7 +323,7 @@
             doc.setFontType('bold')
             doc.text(10, 50, 'Town / City: ')
             doc.setFontType('normal')
-            doc.text(60, 50, 'Amreeka Ton')
+            doc.text(60, 50, {townCity})
 
             doc.setFontType('bold')
             doc.text(10, 60, 'Mobile: ')
@@ -488,18 +506,21 @@
     }
     .slipContainer
     {
-        text-align: center;
+        text-align: left;
         padding: 15px;
     }
     .center-slip-header
     {
         display: inline-block;
-        max-width: 300px;
         text-align: center;
-        padding: 30px;
-        background-color: #ddd;
-        border-radius: 3px;
+        padding: 10px;
+        background-color: #ddddd;
         margin: 15px;
+        width: 100%;
         vertical-align: top;
+    }
+    .slipTable {
+        padding: 20px;
+        border: 1;
     }
 </style>

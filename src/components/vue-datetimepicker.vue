@@ -1,6 +1,6 @@
 <template>
 	 <div class='input-group date col-sm'>
-        <input type='text' class="form-control" />
+        <input style="position:'relative';" type='text' class="form-control" />
         <span class="input-group-addon">
             <span class="glyphicon glyphicon-calendar sm"></span>
         </span>
