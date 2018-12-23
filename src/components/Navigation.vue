@@ -22,8 +22,8 @@
                     },
                     {
                         id: 2,
-                        text: 'About',
-                        page:'/About'
+                        text: 'Attend',
+                        page:'/Attend'
                     },
                     {
                         id: 3,
@@ -44,6 +44,7 @@
     .topnav {
         overflow: hidden;
         position: fixed;
+        z-index: 9999;
         top: 0;
         width: 100%;
         background-color: #333;
