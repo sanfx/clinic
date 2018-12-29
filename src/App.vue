@@ -19,7 +19,10 @@
 </script>
 
 <style>
-  body {margin:0;}
+  body {
+    height: 100%;
+    min-height: 600px;
+  }
   .main {
     padding: 16px;
     margin-top: 30px;

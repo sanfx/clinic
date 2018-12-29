@@ -1,141 +1,191 @@
 <template>
+    <!--https://www.techiediaries.com/vue-axios-tutorial/#Using_Axios_with_Vue-->
     <div id="form-edit">
-        <div class="ui form-style-2 form-control" >
-            <div class="form-style-2-heading" >Attend In Patients</div>
-            <div class="ui form" >
+        <!--<form id="form-edit" v-on:submit="saveRecord">-->
+            <div class="ui form-style-2 form-control" >
+                <div class="form-style-2-heading" >Attend In Patients</div>
+                <div class="ui form" >
+                    <div>
+                        <div class="alignLabel">
+                            <label for="patientName">
+                                <span>Patient Name <span class="required">*</span>
+                                </span>
+                            </label>
+                        </div>
+                        {{patientName}}
+                        <div style="displat:none;">
+                            <!--vue-single-select
+                                    style="display: none;"
+                                    id="inputPatientName"
+                                    :input="patientName"
+                                    v-model="patientName"
+                                    :options="names"
+                                    :required="true"
+                                    @keyup.enter="getPatientProfile"
+                            ></vue-single-select-->
+                            <!--autocomplete
+                                    url="http://192.168.1.3/api/clinic/names"
+                                    placeholder="Enter patient name.."
+                                    anchor='q'
+                                    label="name"
+                                    :required= "true"
+                                    :onSelect="getData"
+                                >
+                            </autocomplete-->
+
+                        </div>
+                        <div id="newPatientInput">
+                            <!--input type="text" @input="addNewVisit" v-model="patientName">
+                            </input-->
+
+                            <input type="text" v-model="patientName" id="autocomplete">
+
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="alignLabel">
+                        <table border="0">
+                            <tr>
+                                <td style="width=50%">
+                                    <select  @change="relationShipSet()" name="" id="" v-model="selectedRelationship">
+                                        <option style="height=150px" :value="n" v-for="n in relationships">{{n.name}}</option>
+                                    </select>
+                                </td>
+                                <td style="vertical-align: middle;">&nbsp; of &nbsp; </td>
+                                <td style="width:335px">
+                                    <!--vue-single-select
+                                            style="display:none;"
+                                            max-height="330px"
+                                            id="inputRelativeName"
+                                            class="parentNameOption"
+                                            :options="relatives"
+                                            :required="true"
+                                            type="text"
+                                            v-model="nameOfrelative"
+                                    ></vue-single-select-->
+                                    <input type="text" @blur="getPatientProfile"  v-model="nameOfrelative">
+                                    </input>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <div  class="alignLabel">
+                            <label for="attendType"><span>Attend Type <span class="required">*</span></span></label>
+                        </div>
+                        <div>
+                            <select>
+                                <option v-model="attendType" :value="n" v-for="n in ['Please select', 'Appointment', 'Walk-in']">{{n}}</option>
+                            </select>
+                        </div>
+                    </div>
                 <div>
                     <div class="alignLabel">
-                        <label for="patientName">
-                            <span>Patient Name <span class="required">*</span>
+                        <label for="dateTimelabel">
+                            <span id="dateTimelabel"style="width:100%; text-align: left;">Date/Time of visit: <span class="required">*</span>
                             </span>
                         </label>
                     </div>
                     <div>
-                        <input type="text" v-model="patientName"></input>
+                        <vue-datetimepicker @change="handleChange($event)"></vue-datetimepicker>
                     </div>
                 </div>
-                <br/>
+                    <br>
                 <div class="alignLabel">
-                    <table border="0">
-                        <tr>
-                            <td style="width=30%">
-                                <select  @change="relationShipSet()" name="" id="" v-model="selectedRelationship">
-                                    <option style="height=150px" :value="n" v-for="n in relationships">{{n.name}}</option>
-                                </select>
-                            </td>
-                            <td style="vertical-align: middle;">&nbsp; of &nbsp; </td>
-                            <td style="width:335px">
-                                <input class="parentNameOption" type="text" v-model="nameOfparent"></input>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <table border="0" id="cssTable" style="width: 100%"><tr>
+                    <td>
+                        <label for="age"><span>Age <span class="required">*</span></span></label>
+                    </td>
+                    <td>
+                        <select v-model="age" >
+                            <option :value="n" v-for="n in 121">{{n}}</option>
+                        </select>
+                    </td>
+                    <td>
+                        &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <label for="gender"><span>Gender<span class="required">*</span></span></label>
+                    </td>
+                    <td>
+                        <input type="radio"
+                               id="male"
+                               value="Male"
+                               v-model="gender"> Male &nbsp;
+                    </td>
 
+                    <td>
+                        <input type="radio"
+                               id="female"
+                               value="Female"
+                               v-model="gender"> Female
+                    </td>
+                </tr>
+                </table>
+                </div>
                 <div>
-                    <div  class="alignLabel">
-                        <label for="attendType"><span>Attend Type <span class="required">*</span></span></label>
+                <label>
+                    <span>Department <span class="required">*</span></span>
+                </label>
+                </div>
+                <div>
+                    <select name="" id="" v-model='selectedDepartment'>
+                        <option :value="n" v-for="n in departments">{{n.name}}</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="alignLabel">
+                        <label for="mobilePhone"><span>Mobile <span class="required">*</span></span></label>
                     </div>
                     <div>
-                        <select>
-                            <option v-model="attendType" :value="n" v-for="n in ['Please select', 'Appointment', 'Walk-in']">{{n}}</option>
-                        </select>
+                        <input type="text" v-model="contactNumber"></input>
                     </div>
                 </div>
-            <div>
-                <div class="alignLabel">
-                    <label for="dateTimelabel">
-                        <span id="dateTimelabel"style="width:100%; text-align: left;">Date/Time of visit: <span class="required">*</span>
-                        </span>
-                    </label>
-                </div>
+                    <div>
+                        <div class="alignLabel">
+                            <label for="email"><span>Email </span></label>
+                        </div>
+                        <div>
+                            <input type="text" v-model="email"></input>
+                        </div>
+                    </div>
                 <div>
-                    <vue-datetimepicker  @change="handleChange($event)"></vue-datetimepicker>
+                    <div class="alignLabel">
+                        <label>
+                            <span>Village/City <span class="required">*</span></span>
+                        </label>
+                    </div>
+                    <div>
+                        <input  type="text" v-model="townCity"></input></label>
+                    </div>
                 </div>
-            </div>
+
+                <div>
+                <div class="alignLabel">
+                    <label for="address"><span>Address
+                     </span>    </label></div>
+                </div>
+
+                <div class="alignLabel">
+                    <textarea-autosize
+                            placeholder="optionally enter full address here..."
+                            ref="someName"
+                            v-model="address"
+                            :min-height="30"
+                            :max-height="350"
+                            @blur.native="onBlurTextarea"
+                    ></textarea-autosize>
+                </div>
+
+                </div>
                 <br>
-            <div class="alignLabel">
-            <table border="0" id="cssTable" style="width: 100%"><tr>
-                <td>
-                    <label for="age"><span>Age <span class="required">*</span></span></label>
-                </td>
-                <td>
-                    <select v-model="age" >
-                        <option :value="n" v-for="n in 121">{{n}}</option>
-                    </select>
-                </td>
-                <td>
-                    &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-                </td>
-                <td>
-                    <label for="gender"><span>Gender<span class="required">*</span></span></label>
-                </td>
-                <td>
-                    <input type="radio"
-                           id="male"
-                           value="Male"
-                           v-model="gender"> Male &nbsp;
-                </td>
-
-                <td>
-                    <input type="radio"
-                           id="female"
-                           value="Female"
-                           v-model="gender"> Female
-                </td>
-            </tr>
-            </table>
-            </div>
-            <div>
-            <label>
-                <span>Department <span class="required">*</span></span>
-            </label>
-            </div>
-            <div>
-                <select name="" id="" v-model='selectedDepartment'>
-                    <option :value="n" v-for="n in departments">{{n.name}}</option>
-                </select>
-            </div>
-            <div>
-                <div class="alignLabel">
-                    <label for="mobilePhone"><span>Mobile <span class="required">*</span></span></label>
-                </div>
-                <div>
-                    <input type="text" v-model="contactNumber"></input>
-                </div>
-            </div>
-
-            <div>
-                <div class="alignLabel">
-                    <label>
-                        <span>Town/City <span class="required">*</span></span>
+                <div  class="alignBtn">
+                    <label><span>&nbsp;</span><input type="submit" v-on:click.prevent="generateSlip()" value="Submit" />
                     </label>
                 </div>
-                <div>
-                    <input  type="text" v-model="townCity"></input></label>
-                </div>
-            </div>
 
-            <div>
-            <div class="alignLabel">
-                <label for="address"><span>Address
-                 </span>    </label></div>
-            </div>
-            <div class="alignLabel">
-                <textarea-autosize
-                        placeholder="optionally enter full address here..."
-                        ref="someName"
-                        v-model="address"
-                        :min-height="30"
-                        :max-height="350"
-                        @blur.native="onBlurTextarea"
-                ></textarea-autosize>
-            </div>
-            </div>
-            <br>
-            <div class="alignBtn">
-                <label><span>&nbsp;</span><input type="submit" v-on:click.prevent="generateSlip()" value="Submit" />
-                </label>
-            </div>
             <br>
             <h3 id="slip" ref="report-link"></h3>
             <div v-bind:style="{ display: displayState }">
@@ -154,7 +204,7 @@
                     <table class="slipTable">
                         <tr>
                             <td style="font-style:bold;" class="alignLabel"><b>Patient Name:</b> </td>
-                            <td>{{patientName}}  {{selectedRelationship.abbrev}}/o {{nameOfparent}}</td>
+                            <td>{{patientName}}  {{selectedRelationship.abbrev}}/o {{nameOfrelative}}</td>
                         </tr>
                         <tr>
                             <td class="alignLabel">
@@ -166,7 +216,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <b>Town / City:</b>  &nbsp; {{townCity}}
+                                <b>Village/City:</b>  &nbsp; {{townCity}}
                             </td>
                             <td class="alignLabel">
                                 <b>Landline/ Mobile: </b> &nbsp; {{contactNumber}}
@@ -204,56 +254,132 @@
                 </div>
             </div>
                 </div>
+            <!--</form>-->
         </div>
 
 </template>
 
+
+
 <script>
     var $ = window.jQuery = require('jquery')
+
     import Vue from 'vue'
-    import { mapFields } from 'vuex-map-fields';
+//    import VueSingleSelect from "vue-single-select";
+    import {APIService} from '../APIService';
+    import {mapFields} from 'vuex-map-fields';
     import VueTextareaAutosize from 'vue-textarea-autosize'
     import printJS from 'print-js'
     import vuedatetimepicker from './vue-datetimepicker.vue'
+//    import Autocomplete from 'vue2-autocomplete-js';
+//    require('vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
 
-    Vue.use(VueTextareaAutosize)
+    Vue.use(VueTextareaAutosize);
 
+    const apiService = new APIService();
+//    Vue.use(Autocomplete);
     export default {
         name: 'Attend',
         data : function (){
             return {
                 patientName: "",
+                patients: [],
+                relatives: [],
+                names: [],
                 displayState: 'none',
                 attendType: "",
-                nameOfparent: '',
+                nameOfrelative: '',
+                numberOfPatients: '',
                 selectedDepartment: '',
                 gender: '',
+                email: '',
+                patients: [],
                 dateTime: '',
-                selectedRelationship : '',
+                selectedRelationship : 'Son',
                 relationships : [
                     {name: 'Son', abbrev: 's'},
                     {name: 'Daughter', abbrev: 'd'},
                     {name: 'Wife', abbrev: 'w'}
                     ],
                 department: '',
-                departments : [{name: 'Medicene', clinicName: 'Swarnkamal', doc: 'Kanwaljit Singh', phone: '9417089045'},
-                    {name: 'Dental', clinicName: 'Vikas Dental', doc: 'Vikas', phone: '9815610902'}],
+                departments : [
+                        {name: 'Medicene', clinicName: 'Swarnkamal', doc: 'Kanwaljit Singh', phone: '9417089045'},
+                    {name: 'Dental', clinicName: 'Vikas Dental', doc: 'Vikas', phone: '9815610902'}
+                    ],
                 townCity: '',
                 contactNumber: '',
                 address: '',
-                age: '0'
+                age: '0',
+                result: null,
+            }
+        },
+        mounted() {
+
+            if (typeof window.jQuery === "function") {
+                jQuery("#autocomplete").autocomplete({
+                    source: [
+                        "c++",
+                        "java",
+                        "php",
+                        "coldfusion",
+                        "javascript",
+                        "asp",
+                        "ruby"
+                    ]
+                });
+            } else {
+                console.log("JQuery is not loaded");
             }
         },
         components: {
         'vue-datetimepicker': vuedatetimepicker,
-
+//            Autocomplete,
+//            VueSingleSelect
         },
-        created() {
-        },
-        mounted: function() {
+        created () {
+            apiService.getnames(this.patientName).then(res => {
+                this.names = res.names;
 
+            console.log(res.names);
+        })
         },
         methods: {
+
+            addNewVisit: function(){
+                var found = this.names.indexOf(this.patientName);
+                if (found != -1){
+                    apiService.getRelatives(this.patientName).then(res => {
+                        this.relatives = res.relatives;
+                        console.log(this.relatives);
+                    })
+//                    alert("Found profile of Patient: " + this.patientName + " !");
+//                    //
+                }
+            },
+            getData: function(data){
+                this.patientName = JSON.stringify(data, null, 4)
+            console.log("getData called: " + this.patientName);
+            },
+            patientNameEntered: function(){
+                var found = this.names.indexOf(this.patientName)
+                if (found != -1){
+                }
+            },
+            foundPatient: function(name){
+              console.log("Found patient");
+            },
+            getPatientProfile: function(){
+                console.log(this.relatives);
+                var found = this.relatives.indexOf(this.nameOfrelative)
+                {
+                    // TODO: pull patient profile and update UI
+                }
+            },
+            getnames: function(){
+                apiService.getnames(this.patientName).then(res => {
+                    this.names = res.names;
+                })
+            },
             handleChange: function(data){
                 this.dateTime = data;
             },
@@ -279,85 +405,137 @@
                     targetStyles: ['*'],
                 });
             },
+            dir: function d(object) {
+                stuff = [];
+                for (s in object) {
+                    stuff.push(s);
+                }
+                stuff.sort();
+                return stuff;
+            },
             editSlip: function(){
                 this.displayState = 'none';
                 window.location = '#form-edit'
             },
-        makePDF: function(){
+            saveRecord: function(){
+                var result = "";
+                var data = {
+                    "name":  this.patientName,
+                    "townCity": this.townCity,
+                    "contactnumber": this.contactNumber ,
+                    "age": this.age,
+                    "gender": this.gender,
+                    "email": this.email,
+                    "postalAddress": this.address,
+                    "relation": this.selectedRelationship.name,
+                    "relativeName": this.nameOfrelative,
+                    "dateTimeofvisit":  this.dateTime,
+                    "attendtype": this.attendType,
+                    "department": this.department,
+                    "doctor": this.selectedDepartment.doc
+                }
+                console.log(data);
+                apiService.createPatient(data).then(res => {
+                    this.resetForm()
+                    this.displayState = 'none';
+                    window.location = '#form-edit'
+                    this.result = res.data
+                    alert(this.result.message);
 
-            var doc = new jsPDF()
+            });
+            },
+            resetForm: function() {
+                this.patientName = ""
+                this.townCity = ""
+                this.contactNumber  = ""
+                this.age = 0
+                this.gender = ""
+                this.email = ""
+                this.address = ""
+                this.selectedRelationship.name = ""
+                this.nameOfrelative = null
+                this.dateTime = ""
+                this.attendType = ""
+                this.department = ""
+            },
+            makePDF: function(){
 
-            doc.setFontSize('30')
-            doc.setFontStyle('bold')
-            doc.text(60, 10, '{selectedDepartment.clinicName} Clinic')
+                var doc = new jsPDF()
 
-            doc.setFont('courier')
-            doc.setFontSize('15')
-            doc.setFontType('normal')
-            doc.text(145, 20, 'Queue # ')
-            doc.text(165, 20, ' 145SAT06')
+                doc.setFontSize('30')
+                doc.setFontStyle('bold')
+                doc.text(60, 10, '{selectedDepartment.clinicName} Clinic')
 
-            doc.setFont('helvetica')
-            doc.setFontSize(18)
-            doc.setFontType('bold')
-            doc.text(10, 30, 'Patient Name: ')
-            doc.setFontType('normal')
-            doc.text(60, 30, 'Niki Lauda')
+                doc.setFont('courier')
+                doc.setFontSize('15')
+                doc.setFontType('normal')
+                doc.text(145, 20, 'Queue # ')
+                doc.text(165, 20, ' 145SAT06')
 
-            doc.setFontStyle('bold')
-            doc.text(95, 30, 's/o ')
-            doc.setFontType('normal')
-            doc.text(110, 30, {nameOfparent})
+                doc.setFont('helvetica')
+                doc.setFontSize(18)
+                doc.setFontType('bold')
+                doc.text(10, 30, 'Patient Name: ')
+                doc.setFontType('normal')
+                doc.text(60, 30, 'Niki Lauda')
 
-            doc.setFontType('bold')
-            doc.text(10, 40, 'Age: ')
-            doc.setFontType('normal')
-            doc.text(30, 40,  {age})
+                doc.setFontStyle('bold')
+                doc.text(95, 30, 's/o ')
+                doc.setFontType('normal')
+                doc.text(110, 30, {nameOfrelative})
 
-            doc.setFontType('bold')
-            doc.text(60, 40, "Gender: ")
-            doc.setFontType('normal')
-            doc.text(86, 40, 'Male')
-            doc.setFontType('bold')
+                doc.setFontType('bold')
+                doc.text(10, 40, 'Age: ')
+                doc.setFontType('normal')
+                doc.text(30, 40,  {age})
 
-            doc.setFontType('bold')
-            doc.text(10, 50, 'Town / City: ')
-            doc.setFontType('normal')
-            doc.text(60, 50, {townCity})
+                doc.setFontType('bold')
+                doc.text(60, 40, "Gender: ")
+                doc.setFontType('normal')
+                doc.text(86, 40, 'Male')
+                doc.setFontType('bold')
 
-            doc.setFontType('bold')
-            doc.text(10, 60, 'Mobile: ')
-            doc.setFontType('normal')
-            doc.text(60, 60, '+1923232442')
+                doc.setFontType('bold')
+                doc.text(10, 50, 'Town / City: ')
+                doc.setFontType('normal')
+                doc.text(60, 50, {townCity})
 
-            doc.setFontType('bold')
-            doc.text(10, 70, 'Department: ')
-            doc.setFontType('normal')
-            doc.text(60, 70, 'Medicine')
-            doc.setFontType('italic')
-            doc.text(112, 70, 'See ')
-            doc.setFontStyle('bold')
-            doc.text(128, 70, 'Dr.')
-            doc.text(138, 70, 'Kanwaljit Singh' )
+                doc.setFontType('bold')
+                doc.text(10, 60, 'Mobile: ')
+                doc.setFontType('normal')
+                doc.text(60, 60, '+1923232442')
 
-            doc.setFontStyle('bold')
-            doc.setFontSize(20)
+                doc.setFontType('bold')
+                doc.text(10, 70, 'Department: ')
+                doc.setFontType('normal')
+                doc.text(60, 70, 'Medicine')
+                doc.setFontType('italic')
+                doc.text(112, 70, 'See ')
+                doc.setFontStyle('bold')
+                doc.text(128, 70, 'Dr.')
+                doc.text(138, 70, 'Kanwaljit Singh' )
 
-            doc.text(10, 90, 'Date/Time: ')
-            doc.setFontType('normal')
-            doc.text(80, 90, '24/12/2018, 14:22')
-            doc.setFontStyle('bold')
-            doc.text(10, 110, 'Patient Signature:')
-            doc.setFontType('normal')
-            doc.text(80, 110, '................................')
+                doc.setFontStyle('bold')
+                doc.setFontSize(20)
 
-            printJS('docs/printjs.pdf')
-        }
+                doc.text(10, 90, 'Date/Time: ')
+                doc.setFontType('normal')
+                doc.text(80, 90, '24/12/2018, 14:22')
+                doc.setFontStyle('bold')
+                doc.text(10, 110, 'Patient Signature:')
+                doc.setFontType('normal')
+                doc.text(80, 110, '................................')
+                printJS('docs/printjs.pdf');
+            }
 
         }
     }
 </script>
-<style scoped>
+<style >
+
+    /*@import '../assets/styles/jquery-ui.css';*/
+    @import 'vue2-autocomplete-js/dist/style/vue2-autocomplete.css';
+
     .input {
         position: relative;
         margin: $ ui-padding 0 ($ ui-padding *2);
