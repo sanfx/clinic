@@ -12,11 +12,10 @@
                                 </span>
                             </label>
                         </div>
-                        {{patientName}}
                         <div id="newPatientInput">
-                            <!--input type="text" @input="addNewVisit" v-model="patientName">
-                            </input-->
+
                             <input type="text"
+                                   placeholder="Enter patient name and hit space bar when done"
                                    @input="addNewVisit"
                                    v-model="patientName"
                                    id="autocompletePatient">
@@ -34,17 +33,51 @@
                                 </td>
                                 <td style="vertical-align: middle;">&nbsp; of &nbsp; </td>
                                 <td style="width:335px">
-                                    <input type="text"
-                                           @blur="getPatientProfile"
-                                           v-model="nameOfrelative"
-                                           id="autocompleteRelative">
-                                    </input>
+                                    <vue-single-select
+                                            :required="true"
+                                            @blur="getPatientProfile"
+                                            @input="getPatientProfile"
+                                            v-model="nameOfrelative"
+                                            :options="relatives"
+                                    ></vue-single-select>
 
                                 </td>
                             </tr>
                         </table>
                     </div>
+                    <div class="alignLabel">
+                        <table border="0" id="cssTable" style="width: 100%"><tr>
+                            <td>
+                                <label for="age"><span style="z-index:-1;">Age <span class="required">*</span>
+                                </span></label>
+                            </td>
+                            <td>
+                                <select v-model="age" >
+                                    <option :value="n" v-for="n in 121">{{n}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            </td>
+                            <td>
+                                <label for="gender"><span style="z-index:-1;">Gender<span class="required">*</span></span></label>
+                            </td>
+                            <td>
+                                <input type="radio"
+                                       id="male"
+                                       value="Male"
+                                       v-model="gender"> Male &nbsp;
+                            </td>
 
+                            <td>
+                                <input type="radio"
+                                       id="female"
+                                       value="Female"
+                                       v-model="gender"> Female
+                            </td>
+                        </tr>
+                        </table>
+                    </div>
                     <div>
                         <div  class="alignLabel">
                             <label for="attendType"><span>Attend Type <span class="required">*</span></span></label>
@@ -65,42 +98,10 @@
                     <div>
                         <datetime format="MM/DD/YYYY H:i:s" width="100%" v-model="dateTime" firstDayOfWeek="1">
                         </datetime>
-                        <!--<vue-datetimepicker @change="handleChange($event)"></vue-datetimepicker>-->
                     </div>
                 </div>
                     <br>
-                <div class="alignLabel" style="z-index:-1;">
-                <table border="0" id="cssTable" style="width: 100%"><tr>
-                    <td>
-                        <label for="age"><span>Age <span class="required">*</span></span></label>
-                    </td>
-                    <td>
-                        <select v-model="age" >
-                            <option :value="n" v-for="n in 121">{{n}}</option>
-                        </select>
-                    </td>
-                    <td>
-                        &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-                    </td>
-                    <td>
-                        <label for="gender"><span>Gender<span class="required">*</span></span></label>
-                    </td>
-                    <td>
-                        <input type="radio"
-                               id="male"
-                               value="Male"
-                               v-model="gender"> Male &nbsp;
-                    </td>
 
-                    <td>
-                        <input type="radio"
-                               id="female"
-                               value="Female"
-                               v-model="gender"> Female
-                    </td>
-                </tr>
-                </table>
-                </div>
                 <div>
                 <label>
                     <span>Department <span class="required">*</span></span>
@@ -288,7 +289,8 @@
 
         },
         components: {
-            datetime
+            datetime,
+            VueSingleSelect
         },
         created () {
             console.log("created");
@@ -306,14 +308,19 @@
         },
         methods: {
             addNewVisit: function(){
-                var found = this.names.indexOf(this.patientName);
+                var pname =  this.patientName
+                var found = this.names.indexOf(pname.trim());
+                var notInList = 'Not in list above';
                 if (found != -1){
-                    apiService.getRelatives(this.patientName).then(res => {
-                        this.relatives = res.relatives;
-                        console.log(this.relatives);
+                    apiService.getRelatives(pname.trim()).then(res => {
+                        this.relatives = res.relatives.concat([notInList]);
                     })
+                    console.log("[" + pname + "]")
 //                    alert("Found profile of Patient: " + this.patientName + " !");
-//                    //
+                }
+                else{
+                    this.relatives = [notInList];
+                    console.log("Found no relative so set not in list as default");
                 }
             },
             getData: function(data){
@@ -329,11 +336,22 @@
               console.log("Found patient");
             },
             getPatientProfile: function(){
-                console.log(this.relatives);
-                var found = this.relatives.indexOf(this.nameOfrelative)
-                {
-                    // TODO: pull patient profile and update UI
+
+                console.log("Relatives: " + this.relatives);
+                var relname =  this.nameOfrelative;
+                if (relname != ""){
+                    if ( relname.trim() == "Not in list above"){
+                        var ques = "Please enter "+ this.selectedRelationship.name +" of !";
+                        var person = prompt(ques, "");
+                        if (person != null) {
+                            this.relatives.concat([relname]);
+                            this.nameOfrelative = person ;
+                        }
+                    } else {
+                        // TODO: pull patient profile and update UI
+                    }
                 }
+
             },
             getnames: function(){
                 apiService.getnames(this.patientName).then(res => {
