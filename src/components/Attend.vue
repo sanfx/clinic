@@ -12,34 +12,9 @@
                                 </span>
                             </label>
                         </div>
-                        {{patientName}}
-                        <div style="displat:none;">
-                            <!--vue-single-select
-                                    style="display: none;"
-                                    id="inputPatientName"
-                                    :input="patientName"
-                                    v-model="patientName"
-                                    :options="names"
-                                    :required="true"
-                                    @keyup.enter="getPatientProfile"
-                            ></vue-single-select-->
-                            <!--autocomplete
-                                    url="http://192.168.1.3/api/clinic/names"
-                                    placeholder="Enter patient name.."
-                                    anchor='q'
-                                    label="name"
-                                    :required= "true"
-                                    :onSelect="getData"
-                                >
-                            </autocomplete-->
-
-                        </div>
+                        For debugging: {{patientName}}
                         <div id="newPatientInput">
-                            <!--input type="text" @input="addNewVisit" v-model="patientName">
-                            </input-->
-
                             <input type="text" v-model="patientName" id="autocomplete">
-
                         </div>
                     </div>
                     <br/>
@@ -53,16 +28,6 @@
                                 </td>
                                 <td style="vertical-align: middle;">&nbsp; of &nbsp; </td>
                                 <td style="width:335px">
-                                    <!--vue-single-select
-                                            style="display:none;"
-                                            max-height="330px"
-                                            id="inputRelativeName"
-                                            class="parentNameOption"
-                                            :options="relatives"
-                                            :required="true"
-                                            type="text"
-                                            v-model="nameOfrelative"
-                                    ></vue-single-select-->
                                     <input type="text" @blur="getPatientProfile"  v-model="nameOfrelative">
                                     </input>
 
@@ -265,19 +230,15 @@
     var $ = window.jQuery = require('jquery')
 
     import Vue from 'vue'
-//    import VueSingleSelect from "vue-single-select";
     import {APIService} from '../APIService';
     import {mapFields} from 'vuex-map-fields';
     import VueTextareaAutosize from 'vue-textarea-autosize'
     import printJS from 'print-js'
     import vuedatetimepicker from './vue-datetimepicker.vue'
-//    import Autocomplete from 'vue2-autocomplete-js';
-//    require('vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
 
     Vue.use(VueTextareaAutosize);
 
     const apiService = new APIService();
-//    Vue.use(Autocomplete);
     export default {
         name: 'Attend',
         data : function (){
@@ -333,8 +294,6 @@
         },
         components: {
         'vue-datetimepicker': vuedatetimepicker,
-//            Autocomplete,
-//            VueSingleSelect
         },
         created () {
             apiService.getnames(this.patientName).then(res => {
@@ -353,7 +312,7 @@
                         console.log(this.relatives);
                     })
 //                    alert("Found profile of Patient: " + this.patientName + " !");
-//                    //
+                    // TODO: call GetPatientProfile and do update
                 }
             },
             getData: function(data){
@@ -532,9 +491,6 @@
     }
 </script>
 <style >
-
-    /*@import '../assets/styles/jquery-ui.css';*/
-    @import 'vue2-autocomplete-js/dist/style/vue2-autocomplete.css';
 
     .input {
         position: relative;
