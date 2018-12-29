@@ -13,32 +13,13 @@
                             </label>
                         </div>
                         {{patientName}}
-                        <div style="displat:none;">
-                            <!--vue-single-select
-                                    style="display: none;"
-                                    id="inputPatientName"
-                                    :input="patientName"
-                                    v-model="patientName"
-                                    :options="names"
-                                    :required="true"
-                                    @keyup.enter="getPatientProfile"
-                            ></vue-single-select-->
-                            <!--autocomplete
-                                    url="http://192.168.1.3/api/clinic/names"
-                                    placeholder="Enter patient name.."
-                                    anchor='q'
-                                    label="name"
-                                    :required= "true"
-                                    :onSelect="getData"
-                                >
-                            </autocomplete-->
-
-                        </div>
                         <div id="newPatientInput">
                             <!--input type="text" @input="addNewVisit" v-model="patientName">
                             </input-->
-
-                            <input type="text" v-model="patientName" id="autocomplete">
+                            <input type="text"
+                                   @input="addNewVisit"
+                                   v-model="patientName"
+                                   id="autocompletePatient">
 
                         </div>
                     </div>
@@ -53,17 +34,10 @@
                                 </td>
                                 <td style="vertical-align: middle;">&nbsp; of &nbsp; </td>
                                 <td style="width:335px">
-                                    <!--vue-single-select
-                                            style="display:none;"
-                                            max-height="330px"
-                                            id="inputRelativeName"
-                                            class="parentNameOption"
-                                            :options="relatives"
-                                            :required="true"
-                                            type="text"
-                                            v-model="nameOfrelative"
-                                    ></vue-single-select-->
-                                    <input type="text" @blur="getPatientProfile"  v-model="nameOfrelative">
+                                    <input type="text"
+                                           @blur="getPatientProfile"
+                                           v-model="nameOfrelative"
+                                           id="autocompleteRelative">
                                     </input>
 
                                 </td>
@@ -89,11 +63,13 @@
                         </label>
                     </div>
                     <div>
-                        <vue-datetimepicker @change="handleChange($event)"></vue-datetimepicker>
+                        <datetime format="MM/DD/YYYY H:i:s" width="100%" v-model="dateTime" firstDayOfWeek="1">
+                        </datetime>
+                        <!--<vue-datetimepicker @change="handleChange($event)"></vue-datetimepicker>-->
                     </div>
                 </div>
                     <br>
-                <div class="alignLabel">
+                <div class="alignLabel" style="z-index:-1;">
                 <table border="0" id="cssTable" style="width: 100%"><tr>
                     <td>
                         <label for="age"><span>Age <span class="required">*</span></span></label>
@@ -136,7 +112,7 @@
                     </select>
                 </div>
                 <div>
-                    <div class="alignLabel">
+                    <div class="alignLabel" style="z-index:-1;">
                         <label for="mobilePhone"><span>Mobile <span class="required">*</span></span></label>
                     </div>
                     <div>
@@ -144,7 +120,7 @@
                     </div>
                 </div>
                     <div>
-                        <div class="alignLabel">
+                        <div class="alignLabel" style="z-index:-1;">
                             <label for="email"><span>Email </span></label>
                         </div>
                         <div>
@@ -152,7 +128,7 @@
                         </div>
                     </div>
                 <div>
-                    <div class="alignLabel">
+                    <div class="alignLabel" style="z-index:-1;">
                         <label>
                             <span>Village/City <span class="required">*</span></span>
                         </label>
@@ -163,7 +139,7 @@
                 </div>
 
                 <div>
-                <div class="alignLabel">
+                <div class="alignLabel" style="z-index:-1;">
                     <label for="address"><span>Address
                      </span>    </label></div>
                 </div>
@@ -262,22 +238,16 @@
 
 
 <script>
-    var $ = window.jQuery = require('jquery')
-
     import Vue from 'vue'
-//    import VueSingleSelect from "vue-single-select";
+    import VueSingleSelect from "vue-single-select";
     import {APIService} from '../APIService';
-    import {mapFields} from 'vuex-map-fields';
     import VueTextareaAutosize from 'vue-textarea-autosize'
     import printJS from 'print-js'
-    import vuedatetimepicker from './vue-datetimepicker.vue'
-//    import Autocomplete from 'vue2-autocomplete-js';
-//    require('vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
+    import datetime from 'vuejs-datetimepicker';
 
     Vue.use(VueTextareaAutosize);
 
     const apiService = new APIService();
-//    Vue.use(Autocomplete);
     export default {
         name: 'Attend',
         data : function (){
@@ -314,37 +284,27 @@
             }
         },
         mounted() {
+            console.log("mounted");
 
-            if (typeof window.jQuery === "function") {
-                jQuery("#autocomplete").autocomplete({
-                    source: [
-                        "c++",
-                        "java",
-                        "php",
-                        "coldfusion",
-                        "javascript",
-                        "asp",
-                        "ruby"
-                    ]
-                });
-            } else {
-                console.log("JQuery is not loaded");
-            }
         },
         components: {
-        'vue-datetimepicker': vuedatetimepicker,
-//            Autocomplete,
-//            VueSingleSelect
+            datetime
         },
         created () {
+            console.log("created");
             apiService.getnames(this.patientName).then(res => {
                 this.names = res.names;
-
-            console.log(res.names);
+                console.log(res.names);
+                if (typeof window.jQuery === "function") {
+                    jQuery("#autocompletePatient").autocomplete({
+                        source: this.names
+                    });
+                } else {
+                    console.log("JQuery is not loaded");
+                }
         })
         },
         methods: {
-
             addNewVisit: function(){
                 var found = this.names.indexOf(this.patientName);
                 if (found != -1){
@@ -379,9 +339,6 @@
                 apiService.getnames(this.patientName).then(res => {
                     this.names = res.names;
                 })
-            },
-            handleChange: function(data){
-                this.dateTime = data;
             },
             relationShipSet: function(){
                 if (this.selectedRelationship.name == 'Son'){
@@ -532,9 +489,6 @@
     }
 </script>
 <style >
-
-    /*@import '../assets/styles/jquery-ui.css';*/
-    @import 'vue2-autocomplete-js/dist/style/vue2-autocomplete.css';
 
     .input {
         position: relative;
