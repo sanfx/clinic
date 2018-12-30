@@ -25,9 +25,21 @@ export class APIService{
         return axios.get(url).then(response => response.data);
     }
 
-    getSelectedPatientProfile(name) {
-        const url = 'http://192.168.1.3/api/clinic/patient_profile';
-        return axios.get(url).then(resp => resp.data);
+    getPatientProfile(patient, relative, relation, contactNumber, townCity) {
+        var p = patient.trim()
+        var r = relative.trim()
+        var url = 'http://192.168.1.3/api/clinic/patient/profile?patient=' + p + '&relative=' + r ;
+
+        if (relation){
+            url += "&relationType=" + relation;
+        }
+        if (contactNumber){
+            url += "&contactNumber=" + contactNumber;
+        }
+        if (townCity){
+            url += "&townCity=" + townCity;
+        }
+        return axios.get(url);
     }
 
     getRelatives(name){

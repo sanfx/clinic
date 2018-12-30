@@ -13,10 +13,10 @@
                             </label>
                         </div>
                         <div id="newPatientInput">
-
+                            <!--Key press event https://stackoverflow.com/a/42952717/3311276-->
                             <input type="text"
-                                   placeholder="Enter patient name and hit space bar when done"
-                                   @input="addNewVisit"
+                                   placeholder="Enter patient name and hit space bar when finish."
+                                   v-on:keyup="addNewVisit"
                                    v-model="patientName"
                                    id="autocompletePatient">
 
@@ -307,11 +307,19 @@
         })
         },
         methods: {
-            addNewVisit: function(){
+            addNewVisit: function(e){
                 var pname =  this.patientName
                 var found = this.names.indexOf(pname.trim());
-                var notInList = 'Not in list above';
-                if (found != -1){
+                let notInList = 'Not in list above';
+                var x = e.which || e.keyCode;
+
+//                console.log("Pressed Key: " + x)
+                if (x === 40){
+                    return "";
+                }
+                // if relative is found (i.e. found is not -1 and user pressed spacebar)
+                if (found != -1 &&  x === 32){
+//                    alert("Got it");
                     apiService.getRelatives(pname.trim()).then(res => {
                         this.relatives = res.relatives.concat([notInList]);
                     })
@@ -322,10 +330,6 @@
                     this.relatives = [notInList];
                     console.log("Found no relative so set not in list as default");
                 }
-            },
-            getData: function(data){
-                this.patientName = JSON.stringify(data, null, 4)
-            console.log("getData called: " + this.patientName);
             },
             patientNameEntered: function(){
                 var found = this.names.indexOf(this.patientName)
@@ -339,8 +343,8 @@
 
                 console.log("Relatives: " + this.relatives);
                 var relname =  this.nameOfrelative;
-                if (relname != ""){
-                    if ( relname.trim() == "Not in list above"){
+                if (relname != null){
+                    if ( relname.trim() === "Not in list above"){
                         var ques = "Please enter "+ this.selectedRelationship.name +" of !";
                         var person = prompt(ques, "");
                         if (person != null) {
@@ -348,7 +352,29 @@
                             this.nameOfrelative = person ;
                         }
                     } else {
-                        // TODO: pull patient profile and update UI
+                        apiService.getPatientProfile(
+                                this.patientName,
+                                relname.trim(),
+                                this.selectedRelationship.name,
+                                this.contactNumber,
+                                this.townCity).then(res => {
+
+                                    if (Object.keys(res.data.profile).length === 0){
+                                        alert(res.data.message);
+                                    }else {
+
+                            console.log("recieved from backend" + Object.keys(res.data.profile).length);
+                            this.townCity = res.data.profile.townCity
+                            this.age = res.data.profile.age
+                            this.gender = res.data.profile.gender
+                            this.contactNumber = res.data.profile.contactNumber
+                            this.email = res.data.profile.email
+                            this.address = res.data.profile.address
+                            this.selectedRelationship = res.data.profile.relation
+                        }
+
+                    })
+                        // Done: pull patient profile and update UI
                     }
                 }
 
@@ -380,9 +406,9 @@
                     targetStyles: ['*'],
                 });
             },
-            dir: function d(object) {
-                stuff = [];
-                for (s in object) {
+            dir: function(object) {
+                var stuff = [];
+                for (var s in object) {
                     stuff.push(s);
                 }
                 stuff.sort();
@@ -409,13 +435,11 @@
                     "department": this.department,
                     "doctor": this.selectedDepartment.doc
                 }
-                console.log(data);
                 apiService.createPatient(data).then(res => {
                     this.resetForm()
                     this.displayState = 'none';
                     window.location = '#form-edit'
                     this.result = res.data
-                    alert(this.result.message);
 
             });
             },
