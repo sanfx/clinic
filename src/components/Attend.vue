@@ -40,7 +40,6 @@
                                             v-model="nameOfrelative"
                                             :options="relatives"
                                     ></vue-single-select>
-
                                 </td>
                             </tr>
                         </table>
@@ -83,8 +82,10 @@
                             <label for="attendType"><span>Attend Type <span class="required">*</span></span></label>
                         </div>
                         <div>
-                            <select>
-                                <option v-model="attendType" :value="n" v-for="n in ['Please select', 'Appointment', 'Walk-in']">{{n}}</option>
+                            <select v-model="attendType">
+                                <option id="attendType"
+                                        :value="n"
+                                        v-for="n in ['Please select', 'Appointment', 'Walk-in']">{{n}}</option>
                             </select>
                         </div>
                     </div>
@@ -108,7 +109,7 @@
                 </label>
                 </div>
                 <div>
-                    <select name="" id="" v-model='selectedDepartment'>
+                    <select name="" id=""  v-model='selectedDepartment'>
                         <option :value="n" v-for="n in departments">{{n.name}}</option>
                     </select>
                 </div>
@@ -152,7 +153,6 @@
                             v-model="address"
                             :min-height="30"
                             :max-height="350"
-                            @blur.native="onBlurTextarea"
                     ></textarea-autosize>
                 </div>
 
@@ -257,7 +257,7 @@
                 patients: [],
                 relatives: [],
                 names: [],
-                displayState: 'none',
+                displayState: 'block',
                 attendType: "",
                 nameOfrelative: '',
                 numberOfPatients: '',
@@ -274,7 +274,7 @@
                     ],
                 department: '',
                 departments : [
-                        {name: 'Medicene', clinicName: 'Swarnkamal', doc: 'Kanwaljit Singh', phone: '9417089045'},
+                        {name: 'Medicene', clinicName: 'Swarnkanwal', doc: 'Kanwaljit Singh', phone: '9417089045'},
                     {name: 'Dental', clinicName: 'Vikas Dental', doc: 'Vikas', phone: '9815610902'}
                     ],
                 townCity: '',
@@ -285,18 +285,25 @@
             }
         },
         mounted() {
-            console.log("mounted");
-
+//            console.log("mounted");
+            if (localStorage.names) {
+                this.names = localStorage.names;
+            }
+        },
+        watch: {
+            names(newNames) {
+                localStorage.names = newNames;
+            }
         },
         components: {
             datetime,
             VueSingleSelect
         },
         created () {
-            console.log("created");
             apiService.getnames(this.patientName).then(res => {
                 this.names = res.names;
-                console.log(res.names);
+                localStorage.names = this.names;
+                console.log("Got from localStorage: " + localStorage.names);
                 if (typeof window.jQuery === "function") {
                     jQuery("#autocompletePatient").autocomplete({
                         source: this.names
@@ -312,36 +319,28 @@
                 var found = this.names.indexOf(pname.trim());
                 let notInList = 'Not in list above';
                 var x = e.which || e.keyCode;
-
-//                console.log("Pressed Key: " + x)
                 if (x === 40){
                     return "";
                 }
                 // if relative is found (i.e. found is not -1 and user pressed spacebar)
                 if (found != -1 &&  x === 32){
-//                    alert("Got it");
                     apiService.getRelatives(pname.trim()).then(res => {
                         this.relatives = res.relatives.concat([notInList]);
                     })
-                    console.log("[" + pname + "]")
-//                    alert("Found profile of Patient: " + this.patientName + " !");
                 }
                 else{
                     this.relatives = [notInList];
                     console.log("Found no relative so set not in list as default");
                 }
             },
-            patientNameEntered: function(){
-                var found = this.names.indexOf(this.patientName)
-                if (found != -1){
-                }
-            },
             foundPatient: function(name){
               console.log("Found patient");
             },
+            updateValue: function(value){
+                console.log(value);
+                this.attendType = value
+            },
             getPatientProfile: function(){
-
-                console.log("Relatives: " + this.relatives);
                 var relname =  this.nameOfrelative;
                 if (relname != null){
                     if ( relname.trim() === "Not in list above"){
@@ -360,10 +359,8 @@
                                 this.townCity).then(res => {
 
                                     if (Object.keys(res.data.profile).length === 0){
-                                        alert(res.data.message);
+//                                        alert(res.data.message);
                                     }else {
-
-                            console.log("recieved from backend" + Object.keys(res.data.profile).length);
                             this.townCity = res.data.profile.townCity
                             this.age = res.data.profile.age
                             this.gender = res.data.profile.gender
@@ -372,12 +369,17 @@
                             this.address = res.data.profile.address
                             this.selectedRelationship = res.data.profile.relation
                         }
-
                     })
                         // Done: pull patient profile and update UI
                     }
                 }
 
+            },
+            all: function(iterable) {
+                for (var index = 0; index < iterable.length; ++index) {
+                    if (!iterable[index]) return false;
+                }
+                return true;
             },
             getnames: function(){
                 apiService.getnames(this.patientName).then(res => {
@@ -396,8 +398,15 @@
                 this.selectedValue = newValue;
             },
             generateSlip: function() {
-                window.location = "#slip"
-                this.displayState = 'block';
+                if (this.age && this.gender && this.contactNumber && this.townCity && this.department.name && this.attendType)
+                 {
+                    window.location = "#slip"
+                    this.displayState = 'block';
+                }
+                else{
+                    console.log(this.age, this.gender, this.contactNumber, this.townCity, this.department.name, this.attendType);
+                    alert("Please fill all required fields." + this.age, this.gender, this.contactNumber, this.townCity, this.department.name, this.attendType);
+                }
             },
             printSlip: function(){
                 printJS({
