@@ -337,8 +337,10 @@
               console.log("Found patient");
             },
             updateValue: function(value){
-                console.log(value);
                 this.attendType = value
+            },
+            updateDepartment: function(value){
+                this.department.name = value
             },
             getPatientProfile: function(){
                 var relname =  this.nameOfrelative;
@@ -398,14 +400,13 @@
                 this.selectedValue = newValue;
             },
             generateSlip: function() {
-                if (this.age && this.gender && this.contactNumber && this.townCity && this.department.name && this.attendType)
+                if (this.age && this.gender && this.contactNumber && this.townCity && this.selectedDepartment && this.attendType)
                  {
                     window.location = "#slip"
                     this.displayState = 'block';
                 }
                 else{
-                    console.log(this.age, this.gender, this.contactNumber, this.townCity, this.department.name, this.attendType);
-                    alert("Please fill all required fields." + this.age, this.gender, this.contactNumber, this.townCity, this.department.name, this.attendType);
+                    alert("Please fill all required fields.");
                 }
             },
             printSlip: function(){
