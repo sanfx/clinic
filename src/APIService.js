@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios';
-const API_URL = '//192.168.1.3:8080';
+const API_URL = '//192.168.1.3';
 export class APIService{
 
     constructor(){

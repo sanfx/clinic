@@ -97,7 +97,7 @@
                         </label>
                     </div>
                     <div>
-                        <datetime format="MM/DD/YYYY H:i:s" width="100%" v-model="dateTime" firstDayOfWeek="1">
+                        <datetime id="dateTimeInput" format="YYYY-MM-DD H:i:s" width="100%" v-model="dateTime" firstDayOfWeek="1">
                         </datetime>
                     </div>
                 </div>
@@ -330,7 +330,6 @@
                 }
                 else{
                     this.relatives = [notInList];
-                    console.log("Found no relative so set not in list as default");
                 }
             },
             foundPatient: function(name){
@@ -405,7 +404,9 @@
                     window.location = "#slip"
                     this.displayState = 'block';
                 }
-                else{
+                else {
+//                    alert(this.dateTime);
+//                    alert(document.getElementById("dateTimeInput").value);
                     alert("Please fill all required fields.");
                 }
             },
