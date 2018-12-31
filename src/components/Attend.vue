@@ -257,7 +257,7 @@
                 patients: [],
                 relatives: [],
                 names: [],
-                displayState: 'block',
+                displayState: 'none',
                 attendType: "",
                 nameOfrelative: '',
                 numberOfPatients: '',
