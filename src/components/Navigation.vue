@@ -27,6 +27,11 @@
                     },
                     {
                         id: 3,
+                        text: 'Checkup',
+                        page: '/Checkup'
+                    },
+                    {
+                        id: 4,
                         text: 'Contact',
                         page:'/Contact'
                     }
