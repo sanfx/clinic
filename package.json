@@ -27,6 +27,7 @@
     "vue-router": "^3.0.1",
     "vue-search-select": "^2.7.1",
     "vue-single-select": "^1.0.29",
+    "vue-tel-input": "^2.0.12",
     "vue-textarea-autosize": "^1.0.4",
     "vue2-autocomplete-js": "^0.2.2",
     "vuejs-datetimepicker": "^1.1.9",

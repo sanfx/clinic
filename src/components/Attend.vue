@@ -118,7 +118,10 @@
                         <label for="mobilePhone"><span>Mobile <span class="required">*</span></span></label>
                     </div>
                     <div>
-                        <input type="text" v-model="contactNumber"></input>
+                        <vue-tel-input style="width:100%" type="text"
+                                       v-model="contactNumber"
+                                       @onInput="onInput"
+                                      :preferredCountries="['in', 'us', 'gb', 'ua']"></vue-tel-input>
                     </div>
                 </div>
                     <div>
@@ -245,8 +248,12 @@
     import VueTextareaAutosize from 'vue-textarea-autosize'
     import printJS from 'print-js'
     import datetime from 'vuejs-datetimepicker';
+    import VueTelInput from 'vue-tel-input'
+
+    import 'vue-tel-input/dist/vue-tel-input.css';
 
     Vue.use(VueTextareaAutosize);
+    Vue.use(VueTelInput)
 
     const apiService = new APIService();
     export default {
@@ -257,6 +264,7 @@
                 patients: [],
                 relatives: [],
                 names: [],
+                validnumber: false,
                 displayState: 'none',
                 attendType: "",
                 nameOfrelative: '',
@@ -297,13 +305,13 @@
         },
         components: {
             datetime,
-            VueSingleSelect
+            VueSingleSelect,
+            VueTelInput
         },
         created () {
             apiService.getnames(this.patientName).then(res => {
                 this.names = res.names;
                 localStorage.names = this.names;
-                console.log("Got from localStorage: " + localStorage.names);
                 if (typeof window.jQuery === "function") {
                     jQuery("#autocompletePatient").autocomplete({
                         source: this.names
@@ -335,6 +343,10 @@
             foundPatient: function(name){
               console.log("Found patient");
             },
+            onInput: function({ number, isValid, country }) {
+                this.validnumber = isValid;
+//                console.log(number, isValid, country);
+            },
             updateValue: function(value){
                 this.attendType = value
             },
@@ -361,14 +373,14 @@
 
                                     if (Object.keys(res.data.profile).length === 0){
 //                                        alert(res.data.message);
-                                    }else {
-                            this.townCity = res.data.profile.towncity
-                            this.age = res.data.profile.age
-                            this.gender = res.data.profile.gender
-                            this.contactNumber = res.data.profile.contactNumber
-                            this.email = res.data.profile.email
-                            this.address = res.data.profile.address
-                            this.selectedRelationship = res.data.profile.relation
+                                    } else {
+                                    this.townCity = res.data.profile.towncity
+                                    this.age = res.data.profile.age
+                                    this.gender = res.data.profile.gender
+                                    this.contactNumber = res.data.profile.contactNumber
+                                    this.email = res.data.profile.email
+                                    this.address = res.data.profile.address
+                                    this.selectedRelationship = res.data.profile.relation
                         }
                     })
                         // Done: pull patient profile and update UI
@@ -399,7 +411,10 @@
                 this.selectedValue = newValue;
             },
             generateSlip: function() {
-                if (this.patientName && this.nameOfrelative && this.age && this.gender && this.contactNumber && this.townCity && this.selectedDepartment && this.attendType)
+                if (this.validnumber === false){
+                    alert("Please enter a valid phone number !");
+                } else if
+                (this.patientName && this.nameOfrelative && this.age && this.gender && this.contactNumber && this.townCity && this.selectedDepartment && this.attendType)
                  {
                     window.location = "#slip"
                     this.displayState = 'block';
