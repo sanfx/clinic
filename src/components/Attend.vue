@@ -121,15 +121,29 @@
                         <vue-tel-input style="width:100%" type="text"
                                        v-model="contactNumber"
                                        @onInput="onInput"
-                                      :preferredCountries="['in', 'us', 'gb', 'ua']"></vue-tel-input>
+                                       defaultCountry="uk"
+                                      :preferredCountries="['in']"></vue-tel-input>
                     </div>
                 </div>
                     <div>
                         <div class="alignLabel" style="z-index:-1;">
                             <label for="email"><span>Email </span></label>
                         </div>
-                        <div>
-                            <input type="text" v-model="email"></input>
+                        <!--div :class="['input-group', isEmailValid()]" id="tapp">
+                            <span class="input-group-addon" id="basic-addon1"><span class="fa fa-envelope"></span></span>
+                            <input type="email" class="form-control" placeholder="Email Address" v-model="email" />
+                        </div-->
+                        <div class="form-group" :class="{'has-error': errors.has('email') }" >
+                            <label class="control-label" for="email">Email</label>
+                            <input v-validate="email"
+                                   name="email"
+                                   class="form-control"
+                                   data-rules="email"
+                                   type="email" v-model="email"
+                                   data-vv-validate-on="validateStep"
+                                   :class="{ 'is-invalid': input && errors.has('email') }"/>
+                            <p class="text-danger" v-if="errors.has('email')">{{ errors.first('email') }}</p>
+
                         </div>
                     </div>
                 <div>
@@ -249,11 +263,14 @@
     import printJS from 'print-js'
     import datetime from 'vuejs-datetimepicker';
     import VueTelInput from 'vue-tel-input'
+    import VeeValidate from 'vee-validate';
+
 
     import 'vue-tel-input/dist/vue-tel-input.css';
 
     Vue.use(VueTextareaAutosize);
-    Vue.use(VueTelInput)
+    Vue.use(VueTelInput);
+    Vue.use(VeeValidate);
 
     const apiService = new APIService();
     export default {
@@ -264,6 +281,8 @@
                 patients: [],
                 relatives: [],
                 names: [],
+                name: '',
+                reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
                 validnumber: false,
                 displayState: 'none',
                 attendType: "",
@@ -308,6 +327,7 @@
             VueSingleSelect,
             VueTelInput
         },
+        $_veeValidate: {validator: 'new'},
         created () {
             apiService.getnames(this.patientName).then(res => {
                 this.names = res.names;
@@ -342,6 +362,9 @@
             },
             foundPatient: function(name){
               console.log("Found patient");
+            },
+            isEmailValid: function() {
+                return (this.email == "")? "" : (this.reg.test(this.email)) ? 'has-success' : 'has-error';
             },
             onInput: function({ number, isValid, country }) {
                 this.validnumber = isValid;
@@ -722,5 +745,9 @@
     .slipTable {
         padding: 20px;
         border: 1;
+    }
+    .form-control.error {
+        border-color: #E84444;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(232,68,68,.6);
     }
 </style>
