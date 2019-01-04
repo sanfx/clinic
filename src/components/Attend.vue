@@ -362,7 +362,7 @@
                                     if (Object.keys(res.data.profile).length === 0){
 //                                        alert(res.data.message);
                                     }else {
-                            this.townCity = res.data.profile.townCity
+                            this.townCity = res.data.profile.towncity
                             this.age = res.data.profile.age
                             this.gender = res.data.profile.gender
                             this.contactNumber = res.data.profile.contactNumber
@@ -399,7 +399,7 @@
                 this.selectedValue = newValue;
             },
             generateSlip: function() {
-                if (this.age && this.gender && this.contactNumber && this.townCity && this.selectedDepartment && this.attendType)
+                if (this.patientName && this.nameOfrelative && this.age && this.gender && this.contactNumber && this.townCity && this.selectedDepartment && this.attendType)
                  {
                     window.location = "#slip"
                     this.displayState = 'block';

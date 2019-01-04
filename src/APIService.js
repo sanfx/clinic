@@ -3,7 +3,8 @@
  */
 
 import axios from 'axios';
-const API_URL = '//192.168.1.3';
+const API_URL = process.env.API_URL;
+
 export class APIService{
 
     constructor(){
