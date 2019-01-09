@@ -56,19 +56,19 @@
                                 </select>
                             </td>
                             <td>
-                                &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                                &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
                             </td>
                             <td>
-                                <label for="gender"><span style="z-index:-1;">Gender<span class="required">*</span></span></label>
+                                <label for="gender"><span style="z-index:-1; width:55px">Gender<span class="required">*</span></span></label>
                             </td>
-                            <td>
+                            <td style="width:50px;">
                                 <input type="radio"
                                        id="male"
                                        value="Male"
-                                       v-model="gender"> Male &nbsp;
+                                       v-model="gender"> Male
                             </td>
 
-                            <td>
+                            <td style="width:90px;">
                                 <input type="radio"
                                        id="female"
                                        value="Female"
@@ -97,7 +97,7 @@
                         </label>
                     </div>
                     <div>
-                        <datetime id="dateTimeInput" format="YYYY-MM-DD H:i:s" width="100%" v-model="dateTime" firstDayOfWeek="1">
+                        <datetime id="dateTimeInput" format="YYYY-MM-DD H:i:s" width="100%" height="80px" v-model="dateTime" firstDayOfWeek="1">
                         </datetime>
                     </div>
                 </div>
@@ -129,11 +129,11 @@
                         <div class="alignLabel" style="z-index:-1;">
                             <label for="email"><span>Email </span></label>
                         </div>
-                        <!--div :class="['input-group', isEmailValid()]" id="tapp">
+                        <div :class="['input-group', isEmailValid()]" id="tapp">
                             <span class="input-group-addon" id="basic-addon1"><span class="fa fa-envelope"></span></span>
                             <input type="email" class="form-control" placeholder="Email Address" v-model="email" />
-                        </div-->
-                        <div class="form-group" :class="{'has-error': errors.has('email') }" >
+                        </div>
+                        <!--div class="form-group" :class="{'has-error': errors.has('email') }" >
                             <label class="control-label" for="email">Email</label>
                             <input v-validate="email"
                                    name="email"
@@ -144,7 +144,7 @@
                                    :class="{ 'is-invalid': input && errors.has('email') }"/>
                             <p class="text-danger" v-if="errors.has('email')">{{ errors.first('email') }}</p>
 
-                        </div>
+                        </div-->
                     </div>
                 <div>
                     <div class="alignLabel" style="z-index:-1;">
@@ -158,20 +158,20 @@
                 </div>
 
                 <div>
-                <div class="alignLabel" style="z-index:-1;">
-                    <label for="address"><span>Address
-                     </span>    </label></div>
-                </div>
+                    <div class="alignLabel" style="z-index:-1;">
+                        <label for="address"><span>Address
+                         </span>    </label></div>
+                    </div>
 
-                <div class="alignLabel">
-                    <textarea-autosize
-                            placeholder="optionally enter full address here..."
-                            ref="someName"
-                            v-model="address"
-                            :min-height="30"
-                            :max-height="350"
-                    ></textarea-autosize>
-                </div>
+                    <div class="alignLabel">
+                        <textarea-autosize
+                                placeholder="optionally enter full address here..."
+                                ref="someName"
+                                v-model="address"
+                                :min-height="30"
+                                :max-height="350"
+                        ></textarea-autosize>
+                    </div>
 
                 </div>
                 <br>
@@ -409,7 +409,6 @@
                         // Done: pull patient profile and update UI
                     }
                 }
-
             },
             all: function(iterable) {
                 for (var index = 0; index < iterable.length; ++index) {
@@ -671,6 +670,7 @@
         color: #fff;
     }
     .alignLabel {
+        font-weight: bold;
         display: overlay;
         position: relative;
         bottom: 0;
@@ -750,4 +750,5 @@
         border-color: #E84444;
         box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(232,68,68,.6);
     }
+
 </style>

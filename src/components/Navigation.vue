@@ -5,6 +5,9 @@
                      v-bind:key="routes.id"
                      :to="`${routes.page}`">{{routes.text}}</router-link>
     </nav>
+    <div class="topnav-right">
+        <a href="#login">Login</a>
+    </div>
 </div>
 </template>
 

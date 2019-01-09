@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import About from '@/components/About'
-import Checkup from '@/components/Checkup'
+import Checkup from '@/views/Checkup'
 import Contact from '@/components/Contact'
 import Attend from '@/components/Attend'
 
